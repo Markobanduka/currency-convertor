@@ -15,6 +15,15 @@ export const initialUserState: UserState = {
   isUserCreated: false,
 };
 
+export const loadUserState = () => {
+  const userData = localStorage.getItem("UserState");
+
+  if (userData) {
+    return JSON.parse(userData);
+  }
+  return initialUserState;
+};
+
 export const userReducer = (state: UserState, action: Action) => {
   switch (action.type) {
     case "SET_USERNAME":

@@ -1,7 +1,7 @@
-import { createContext, useReducer, useState } from "react";
+import { createContext, useEffect, useReducer, useState } from "react";
 import Payment from "./Components/Payment";
 import { CURRENCIES } from "./Components/Utils/CurrencyUtils";
-import { userReducer, initialUserState } from "./Reducers/User";
+import { userReducer, loadUserState } from "./Reducers/User";
 
 interface CurrencyContextType {
   currency: keyof typeof CURRENCIES;
@@ -21,7 +21,7 @@ export const ContextAmount = createContext<AmountContextType | undefined>(
 );
 
 const App: React.FC = () => {
-  const [userState, dispatch] = useReducer(userReducer, initialUserState);
+  const [userState, dispatch] = useReducer(userReducer, loadUserState());
   const [currency, setCurrency] = useState<keyof typeof CURRENCIES>("EUR");
   const [amount, setAmount] = useState<number>(0);
 
@@ -40,6 +40,12 @@ const App: React.FC = () => {
     }
     dispatch({ type: "SET_USER_CREATED", payload: true });
   };
+
+  useEffect(() => {
+    if (userState.isUserCreated) {
+      localStorage.setItem("UserState", JSON.stringify(userState));
+    }
+  }, [userState]);
 
   return (
     <div>
